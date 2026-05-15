@@ -1,0 +1,27 @@
+{
+  "name": "full-stack-open-graphql",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/KoblaQ/full-stack-open-GraphQL#readme",
+  "bugs": {
+    "url": "https://github.com/KoblaQ/full-stack-open-GraphQL/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KoblaQ/full-stack-open-GraphQL.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.5.1",
+    "graphql": "^16.14.0",
+    "uuid": "^14.0.0"
+  }
+}
