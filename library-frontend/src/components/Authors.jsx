@@ -2,7 +2,34 @@ const Authors = (props) => {
   if (!props.show) {
     return null
   }
-  const authors = []
+  const authors = props.authors
+  // const authors = [
+  //   {
+  //     name: 'Robert Martin',
+  //     born: 1952,
+  //     bookCount: 2,
+  //   },
+  //   {
+  //     name: 'Martin Fowler',
+  //     born: 1963,
+  //     bookCount: 1,
+  //   },
+  //   {
+  //     name: 'Fyodor Dostoevsky',
+  //     born: 1821,
+  //     bookCount: 2,
+  //   },
+  //   {
+  //     name: 'Joshua Kerievsky',
+  //     born: null,
+  //     bookCount: 1,
+  //   },
+  //   {
+  //     name: 'Sandi Metz',
+  //     born: null,
+  //     bookCount: 1,
+  //   },
+  // ]
 
   return (
     <div>
