@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import BirthYearForm from './components/BirthYearForm'
 
 import { useQuery } from '@apollo/client/react'
 import { ALL_AUTHORS, ALL_BOOKS } from './queries'
@@ -29,7 +30,7 @@ const App = () => {
         show={page === 'authors'}
         authors={authorsResult.data?.allAuthors}
       />
-
+      <BirthYearForm show={page === 'authors'} />
       <Books show={page === 'books'} books={booksResult.data.allBooks} />
 
       <NewBook show={page === 'add'} />
