@@ -30,7 +30,10 @@ const App = () => {
         show={page === 'authors'}
         authors={authorsResult.data?.allAuthors}
       />
-      <BirthYearForm show={page === 'authors'} />
+      <BirthYearForm
+        show={page === 'authors'}
+        authors={authorsResult.data?.allAuthors}
+      />
       <Books show={page === 'books'} books={booksResult.data.allBooks} />
 
       <NewBook show={page === 'add'} />
