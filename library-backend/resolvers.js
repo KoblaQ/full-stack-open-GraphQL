@@ -52,6 +52,20 @@ const resolvers = {
       if (!args.author && !args.genre) {
         return Book.find({}).populate('author')
       }
+
+      let filter = {}
+
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author })
+        filter.author = author._id
+      }
+
+      if (args.genre) {
+        filter.genres = args.genre
+      }
+
+      return await Book.find(filter).populate('author')
+
       // return books.filter(
       //   (book) =>
       //     (!args.author || book.author === args.author) &&
@@ -112,19 +126,38 @@ const resolvers = {
       }
     },
 
-    editAuthor: (root, args) => {
-      const author = authors.find((author) => author.name === args.name)
+    editAuthor: async (root, args) => {
+      // const author = authors.find((author) => author.name === args.name)
+      const author = await Author.findOne({ name: args.name })
 
       if (!author) {
         return null
       }
 
-      const updatedAuthor = { ...author, born: args.setBornTo }
-      authors = authors.map((author) =>
-        author.name === args.name ? updatedAuthor : author,
-      )
+      author.born = args.setBornTo
 
-      return updatedAuthor
+      try {
+        const updatedAuthor = await author.save()
+        return updatedAuthor
+      } catch (error) {
+        throw new GraphQLError(
+          `Updating author birthdate failed: ${error.message}`,
+          {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.name,
+              error,
+            },
+          },
+        )
+      }
+
+      // const updatedAuthor = { ...author, born: args.setBornTo }
+      // authors = authors.map((author) =>
+      //   author.name === args.name ? updatedAuthor : author,
+      // )
+
+      // return updatedAuthor
     },
   },
 }
