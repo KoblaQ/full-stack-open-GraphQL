@@ -57,6 +57,9 @@ const resolvers = {
 
       if (args.author) {
         const author = await Author.findOne({ name: args.author })
+        if (!author) {
+          return []
+        }
         filter.author = author._id
       }
 
@@ -94,7 +97,18 @@ const resolvers = {
           // id: uuid(),
         })
         // authors = authors.concat(author)
-        await author.save()
+
+        try {
+          await author.save()
+        } catch (error) {
+          throw new GraphQLError(`Saving author failed: ${error.message}`, {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.author,
+              error,
+            },
+          })
+        }
       }
 
       const titleExists = await Book.exists({ title: args.title })
