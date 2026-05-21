@@ -43,7 +43,6 @@ const resolvers = {
     //   return persons.filter(byPhone)
     // },
     allPersons: async (root, args) => {
-      // filters missing
       if (!args.phone) {
         return Person.find({})
       }
