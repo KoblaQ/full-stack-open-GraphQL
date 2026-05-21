@@ -1,9 +1,11 @@
 // import { gql } from '@apollo/client'
-import { useQuery } from '@apollo/client/react'
+import { useApolloClient, useQuery } from '@apollo/client/react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import PhoneForm from './components/PhoneForm'
 import Notify from './components/Notify'
+import LoginForm from './components/LoginForm'
+
 import { ALL_PERSONS } from './queries'
 import { useState } from 'react'
 
@@ -18,6 +20,9 @@ import { useState } from 'react'
 // `
 
 const App = () => {
+  const [token, setToken] = useState(
+    localStorage.getItem('phonebook-user-token'),
+  )
   const [errorMessage, setErrorMessage] = useState(null)
 
   const result = useQuery(
@@ -27,8 +32,16 @@ const App = () => {
     // }
   )
 
+  const client = useApolloClient()
+
   if (result.loading) {
     return <div>loading...</div>
+  }
+
+  const onLogout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
   }
 
   const notify = (message) => {
@@ -38,10 +51,21 @@ const App = () => {
     }, 10000)
   }
 
+  if (!token) {
+    return (
+      <div>
+        <Notify errorMessage={errorMessage} />
+        <h2>Login</h2>
+        <LoginForm setToken={setToken} setError={notify} />
+      </div>
+    )
+  }
+
   // return <div>{result.data.allPersons.map((p) => p.name).join(', ')}</div>
   return (
     <div>
       <Notify errorMessage={errorMessage} />
+      <button onClick={onLogout}>logout</button>
       <Persons persons={result.data.allPersons} />
       <PersonForm setError={notify} />
       <PhoneForm setError={notify} />
