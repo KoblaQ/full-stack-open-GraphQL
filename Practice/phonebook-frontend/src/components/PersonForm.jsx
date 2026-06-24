@@ -7,11 +7,13 @@ const CREATE_PERSON = gql`
     $name: String!
     $street: String!
     $city: String!
-    $phone: String
+    $number: String # $phone: String
   ) {
-    addPerson(name: $name, street: $street, city: $city, phone: $phone) {
+    addPerson(name: $name, street: $street, city: $city, number: $number) {
+      # addPerson(name: $name, street: $street, city: $city, phone: $phone) {
       name
-      phone
+      number
+      # phone
       id
       address {
         street
@@ -25,7 +27,8 @@ const ALL_PERSONS = gql`
   query {
     allPersons {
       name
-      phone
+      # phone
+      number
       id
     }
   }
@@ -33,7 +36,8 @@ const ALL_PERSONS = gql`
 
 const PersonForm = ({ setError }) => {
   const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
+  const [number, setNumber] = useState('')
+  // const [phone, setPhone] = useState('')
   const [street, setStreet] = useState('')
   const [city, setCity] = useState('')
 
@@ -46,10 +50,12 @@ const PersonForm = ({ setError }) => {
   const submit = (event) => {
     event.preventDefault()
 
-    createPerson({ variables: { name, phone, street, city } })
+    createPerson({ variables: { name, number, street, city } })
+    // createPerson({ variables: { name, phone, street, city } })
 
     setName('')
-    setPhone('')
+    setNumber('')
+    // setPhone('')
     setStreet('')
     setCity('')
   }
@@ -68,8 +74,10 @@ const PersonForm = ({ setError }) => {
         <div>
           phone{' '}
           <input
-            value={phone}
-            onChange={({ target }) => setPhone(target.value)}
+            value={number}
+            // value={phone}
+            onChange={({ target }) => setNumber(target.value)}
+            // onChange={({ target }) => setPhone(target.value)}
           />
         </div>
         <div>

@@ -6,10 +6,14 @@ const schema = new mongoose.Schema({
     required: true,
     minlength: 5,
   },
-  phone: {
+  number: {
     type: String,
     minlength: 5,
   },
+  // phone: {
+  //   type: String,
+  //   minlength: 5,
+  // },
   street: {
     type: String,
     required: true,

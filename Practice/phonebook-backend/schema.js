@@ -6,10 +6,16 @@ const typeDefs = /* GraphQL */ `
 
   type Person {
     name: String!
-    phone: String
+    number: String
     address: Address!
     id: ID!
   }
+  # type Person {
+  #   name: String!
+  #   phone: String
+  #   address: Address!
+  #   id: ID!
+  # }
 
   enum YesNo {
     YES
@@ -28,7 +34,8 @@ const typeDefs = /* GraphQL */ `
 
   type Query {
     personCount: Int!
-    allPersons(phone: YesNo): [Person!]!
+    allPersons(number: YesNo): [Person!]!
+    # allPersons(phone: YesNo): [Person!]!
     # allPersons: [Person!]!
     findPerson(name: String!): Person
     me: User
@@ -37,12 +44,14 @@ const typeDefs = /* GraphQL */ `
   type Mutation {
     addPerson(
       name: String!
-      phone: String
+      number: String
+      # number: String
       street: String!
       city: String!
     ): Person
 
-    editNumber(name: String!, phone: String!): Person
+    editNumber(name: String!, number: String!): Person
+    # editNumber(name: String!, phone: String!): Person
 
     createUser(username: String!): User
 

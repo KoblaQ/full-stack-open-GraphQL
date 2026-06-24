@@ -30,7 +30,7 @@ const User = require('./models/user')
 const resolvers = {
   Query: {
     // personCount: () => persons.length,
-    personCount: async () => this.Person.collection.countDocuments(),
+    personCount: async () => Person.collection.countDocuments(),
     // // allPersons: () => persons,
     // allPersons: (root, args) => {
     //   if (!args.phone) {
@@ -43,15 +43,18 @@ const resolvers = {
     //   return persons.filter(byPhone)
     // },
     allPersons: async (root, args) => {
-      if (!args.phone) {
+      if (!args.number) {
+        // if (!args.phone) {
+        // console.log(await Person.find({}))
         return Person.find({})
       }
 
-      return this.Person.find({ phone: { $exists: args.phone === 'YES' } })
+      return Person.find({ number: { $exists: args.number === 'YES' } })
+      // return this.Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
 
     // findPerson: (root, args) => persons.find((p) => p.name === args.name),
-    findPerson: async (root, args) => this.Person.findOne({ name: args.name }),
+    findPerson: async (root, args) => Person.findOne({ name: args.name }),
 
     me: (root, args, context) => {
       return context.currentUser
@@ -112,7 +115,7 @@ const resolvers = {
         })
       }
 
-      const nameExists = await this.Person.exists({ name: args.name })
+      const nameExists = await Person.exists({ name: args.name })
 
       if (nameExists) {
         throw new GraphQLError(`Name must be unique: ${args.name}`, {
@@ -123,7 +126,7 @@ const resolvers = {
         })
       }
 
-      const person = new this.Person({ ...args })
+      const person = new Person({ ...args })
 
       try {
         await person.save()
@@ -155,13 +158,14 @@ const resolvers = {
     // },
 
     editNumber: async (root, args) => {
-      const person = await this.Person.findOne({ name: args.name })
+      const person = await Person.findOne({ name: args.name })
 
       if (!person) {
         return null
       }
 
-      person.phone = args.phone
+      person.number = args.number
+      // person.phone = args.phone
 
       try {
         await person.save()
