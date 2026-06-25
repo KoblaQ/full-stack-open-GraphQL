@@ -22,28 +22,28 @@ const client = new ApolloClient({
   // link: new HttpLink({
   //   uri: 'http://localhost:4000',
   // }),
-  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
 })
 
-const query = gql`
-  query {
-    allPersons {
-      name
-      # phone
-      number
-      address {
-        street
-        city
-      }
-      id
-    }
-  }
-`
+// const query = gql`
+//   query {
+//     allPersons {
+//       name
+//       # phone
+//       number
+//       address {
+//         street
+//         city
+//       }
+//       id
+//     }
+//   }
+// `
 
-client.query({ query }).then((response) => {
-  console.log(response.data)
-})
+// client.query({ query }).then((response) => {
+//   console.log(response.data)
+// })
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
