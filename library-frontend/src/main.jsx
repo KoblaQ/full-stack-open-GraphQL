@@ -30,9 +30,9 @@ const query = gql`
   }
 `
 
-client.query({ query }).then((response) => {
-  console.log(response.data)
-})
+// client.query({ query }).then((response) => {
+//   console.log(response.data)
+// })
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
