@@ -16,7 +16,6 @@ const LoginForm = ({ show, setToken, setPage }) => {
 
   const submit = (event) => {
     event.preventDefault()
-    console.log('logged in')
     login({ variables: { username, password } })
 
     setUsername('')

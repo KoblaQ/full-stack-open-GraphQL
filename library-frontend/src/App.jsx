@@ -9,7 +9,7 @@ import { useApolloClient, useQuery } from '@apollo/client/react'
 import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 
 const App = () => {
-  const [page, setPage] = useState('authors')
+  const [page, setPage] = useState('books')
   const [token, setToken] = useState(localStorage.getItem('library-user-token'))
 
   const authorsResult = useQuery(ALL_AUTHORS)
@@ -51,7 +51,7 @@ const App = () => {
       /> */}
       <Books show={page === 'books'} books={booksResult.data.allBooks} />
 
-      <NewBook show={page === 'add'} token={token} />
+      <NewBook show={page === 'add'} token={token} setPage={setPage} />
 
       <LoginForm
         show={page === 'login'}
