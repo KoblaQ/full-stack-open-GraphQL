@@ -1,7 +1,9 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 const Books = (props) => {
-  const [filter, setFilter] = useState(null)
+  // const [filter, setFilter] = useState(null)
+  const filter = props.filter
+  const setFilter = props.setFilter
 
   if (!props.show) {
     return null
