@@ -12,6 +12,9 @@ const NewBook = (props) => {
 
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }],
+    onCompleted: () => {
+      props.setPage('books')
+    },
     onError: (error) => console.log(error),
   })
 
@@ -34,7 +37,7 @@ const NewBook = (props) => {
     setGenres([])
     setGenre('')
 
-    props.setPage('books')
+    // props.setPage('books')
   }
 
   const addGenre = () => {
@@ -77,9 +80,10 @@ const NewBook = (props) => {
           </label>
         </div>
         <div>
-          <label htmlFor="genre">
+          <label>
+            genre
             <input
-              id="genre"
+              name="genre"
               value={genre}
               onChange={({ target }) => setGenre(target.value)}
             />

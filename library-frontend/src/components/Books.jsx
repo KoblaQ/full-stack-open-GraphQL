@@ -4,10 +4,6 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const [filter, setFilter] = useState(null)
-  // const books = props.books
-
-  const allBooksResult = useQuery(ALL_BOOKS)
-  const allBooks = allBooksResult.data?.allBooks ?? []
 
   const filteredBooksResult = useQuery(ALL_BOOKS, {
     variables: { genre: filter },
@@ -15,22 +11,19 @@ const Books = (props) => {
   })
   const filteredBooks = filteredBooksResult.data?.allBooks ?? []
 
-  // const bookList = result.data?.allBooks ?? []
-  // console.log(allBooks)
-
-  if (allBooksResult.loading || filteredBooksResult.loading) {
-    return <div>loading...</div>
-  }
-
   if (!props.show) {
     return null
+  }
+
+  if (filter && filteredBooksResult.loading) {
+    return <div>loading...</div>
   }
 
   // console.log(books)
 
   // console.log(filteredBooks)
 
-  const books = !filter ? allBooks : filteredBooks
+  const books = !filter ? props.books : filteredBooks
   // const bookList = !filter
   //   ? books
   //   : books.filter((book) =>
@@ -41,7 +34,7 @@ const Books = (props) => {
 
   const genreList = [
     ...new Set(
-      allBooks.flatMap((book) =>
+      props.books.flatMap((book) =>
         book.genres.map((genre) => genre.toLowerCase()),
       ),
     ),
@@ -74,16 +67,20 @@ const Books = (props) => {
         </tbody>
       </table>
 
-      <label>
+      <div>
+        <button type="button" onClick={() => setFilter(null)}>
+          all genres
+        </button>
         {genreList.map((genre) => (
           <button
             key={genre}
+            name="genre"
             onClick={() => setFilter(filter === genre ? null : genre)} // can be unselected to show the full list
           >
             {genre}
           </button>
         ))}
-      </label>
+      </div>
     </div>
   )
 }
