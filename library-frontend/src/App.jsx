@@ -7,20 +7,20 @@ import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
 
 import { useApolloClient, useQuery } from '@apollo/client/react'
-import { ALL_AUTHORS, ALL_BOOKS, ME } from './queries'
+import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('books')
   const [token, setToken] = useState(localStorage.getItem('library-user-token'))
-  const [filter, setFilter] = useState(null)
 
   const authorsResult = useQuery(ALL_AUTHORS)
   const booksResult = useQuery(ALL_BOOKS)
-  const me = useQuery(ME)
+  // const me = useQuery(ME)
+  // console.log(me.data?.me?.favoriteGenre)
 
   const client = useApolloClient()
 
-  if (authorsResult.loading || booksResult.loading || me.loading) {
+  if (authorsResult.loading || booksResult.loading) {
     return <div>loading...</div>
   }
 
@@ -55,22 +55,11 @@ const App = () => {
         show={page === 'authors'}
         authors={authorsResult.data?.allAuthors}
       /> */}
-      <Books
-        show={page === 'books'}
-        books={booksResult.data.allBooks}
-        filter={filter}
-        setFilter={setFilter}
-      />
+      <Books show={page === 'books'} books={booksResult.data.allBooks} />
 
       <NewBook show={page === 'add'} token={token} setPage={setPage} />
 
-      <Recommendations
-        show={page === 'recommend'}
-        books={booksResult.data.allBooks}
-        filter={filter}
-        setFilter={setFilter}
-        favoriteGenre={me?.data?.me?.favoriteGenre}
-      />
+      <Recommendations show={page === 'recommend'} token={token} />
 
       <LoginForm
         show={page === 'login'}

@@ -1,30 +1,39 @@
 // import { useState } from 'react'
+import { useQuery } from '@apollo/client/react'
+import { ALL_BOOKS, ME } from '../queries'
 
 const Recommendations = (props) => {
-  // const [filter, setFilter] = useState(null)
+  const me = useQuery(ME, { skip: !props.token })
+  const genre = me?.data?.me?.favoriteGenre
 
-  const favoriteGenre = props.favoriteGenre
-  console.log(favoriteGenre)
+  // console.log(genre)
+  // const genre = props.favoriteGenre
+
+  const result = useQuery(ALL_BOOKS, {
+    variables: { genre },
+    skip: !genre,
+  })
+
+  const books = result.data?.allBooks ?? []
 
   if (!props.show) {
     return null
   }
 
-  const books = props.books
   // console.log(books)
 
-  const filteredBooks = !favoriteGenre
-    ? books
-    : books.filter((book) =>
-        book.genres.some((genre) => genre.toLowerCase() === favoriteGenre),
-      )
+  // const filteredBooks = !favoriteGenre
+  //   ? books
+  //   : books.filter((book) =>
+  //       book.genres.some((genre) => genre.toLowerCase() === favoriteGenre),
+  //     )
 
   return (
     <div>
       <h2>recommendations</h2>
-      {favoriteGenre && (
+      {genre && (
         <div>
-          books in your favorite genre <strong>{favoriteGenre}</strong>
+          books in your favorite genre <strong>{genre}</strong>
         </div>
       )}
 
@@ -35,7 +44,7 @@ const Recommendations = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.id}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
