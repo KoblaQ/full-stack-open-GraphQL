@@ -4,14 +4,23 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const [filter, setFilter] = useState(null)
-  const books = props.books
+  // const books = props.books
 
-  const result = useQuery(ALL_BOOKS, {
+  const allBooksResult = useQuery(ALL_BOOKS)
+  const allBooks = allBooksResult.data?.allBooks ?? []
+
+  const filteredBooksResult = useQuery(ALL_BOOKS, {
     variables: { genre: filter },
     skip: !filter,
   })
+  const filteredBooks = filteredBooksResult.data?.allBooks ?? []
 
-  const filteredBooks = result.data?.allBooks ?? []
+  // const bookList = result.data?.allBooks ?? []
+  // console.log(allBooks)
+
+  if (allBooksResult.loading || filteredBooksResult.loading) {
+    return <div>loading...</div>
+  }
 
   if (!props.show) {
     return null
@@ -21,7 +30,7 @@ const Books = (props) => {
 
   // console.log(filteredBooks)
 
-  const bookList = !filter ? books : filteredBooks
+  const books = !filter ? allBooks : filteredBooks
   // const bookList = !filter
   //   ? books
   //   : books.filter((book) =>
@@ -32,7 +41,9 @@ const Books = (props) => {
 
   const genreList = [
     ...new Set(
-      books.flatMap((book) => book.genres.map((genre) => genre.toLowerCase())),
+      allBooks.flatMap((book) =>
+        book.genres.map((genre) => genre.toLowerCase()),
+      ),
     ),
   ] // Use To lowercase to prevent duplicates
   // console.log(genreList)
@@ -53,7 +64,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {bookList.map((a) => (
+          {books.map((a) => (
             <tr key={a.id}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
