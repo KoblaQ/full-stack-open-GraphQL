@@ -1,7 +1,7 @@
 const typeDefs = /* GraphQL */ `
   type Address {
-    street: String!
-    city: String!
+    street: String
+    city: String
   }
 
   type Person {

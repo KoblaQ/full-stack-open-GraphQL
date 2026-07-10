@@ -6,7 +6,7 @@ const FIND_PERSON = gql`
   query findPersonByName($nameToSearch: String!) {
     findPerson(name: $nameToSearch) {
       name
-      phone
+      number
       address {
         street
         city
