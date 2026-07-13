@@ -32,6 +32,10 @@ const typeDefs = /* GraphQL */ `
     value: String!
   }
 
+  type Subscription {
+    personAdded: Person!
+  }
+
   type Query {
     personCount: Int!
     allPersons(number: YesNo): [Person!]!
