@@ -8,6 +8,7 @@ const typeDefs = /* GraphQL */ `
     name: String!
     number: String
     address: Address!
+    friendOf: [User!]!
     id: ID!
   }
   # type Person {

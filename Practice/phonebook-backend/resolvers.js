@@ -46,13 +46,17 @@ const resolvers = {
     //   return persons.filter(byPhone)
     // },
     allPersons: async (root, args) => {
+      console.log('Person.find')
       if (!args.number) {
         // if (!args.phone) {
         // console.log(await Person.find({}))
-        return Person.find({})
+        // return Person.find({})
+        return Person.find({}).populate('friendOf')
       }
 
-      return Person.find({ number: { $exists: args.number === 'YES' } })
+      return Person.find({
+        number: { $exists: args.number === 'YES' },
+      }).populate('friendOf')
       // return this.Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
 
@@ -78,6 +82,15 @@ const resolvers = {
         street,
         city,
       }
+    },
+    friendOf: async (root) => {
+      console.log('User.find')
+      const friends = await User.find({
+        friends: {
+          $in: [root._id],
+        },
+      })
+      return friends
     },
   },
 
