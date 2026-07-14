@@ -54,6 +54,7 @@ const resolvers = {
     //   )
     // },
     allBooks: async (root, args) => {
+      console.log('Book.find')
       if (!args.author && !args.genre) {
         return Book.find({}).populate('author')
       }
@@ -81,7 +82,28 @@ const resolvers = {
       // )
     },
     // allAuthors: () => authors,
-    allAuthors: async () => await Author.find({}),
+    // allAuthors: async () => await Author.find({}),
+    allAuthors: async () => {
+      console.log('Authors.find')
+      const authors = await Author.find({})
+      const bookCounts = await Book.aggregate([
+        {
+          $group: {
+            _id: '$author',
+            count: { $sum: 1 },
+          },
+        },
+      ])
+
+      const countsByAuthorId = new Map(
+        bookCounts.map(({ _id, count }) => [_id.toString(), count]),
+      )
+
+      return authors.map((author) => ({
+        ...author.toObject(),
+        bookCount: countsByAuthorId.get(author._id.toString()) ?? 0,
+      }))
+    },
 
     me: (root, args, context) => {
       return context.currentUser
@@ -89,9 +111,9 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: async (root) => {
-      // return books.filter((book) => book.author === root.name).length
-      return await Book.collection.countDocuments({ author: root._id })
+    bookCount: (root) => {
+      console.log('BOOK.Count')
+      return root.bookCount ?? 0
     },
   },
 

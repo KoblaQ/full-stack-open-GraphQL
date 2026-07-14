@@ -10,6 +10,7 @@ const cors = require('cors')
 const express = require('express')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const http = require('http')
+const mongoose = require('mongoose')
 
 // Websocket
 const { WebSocketServer } = require('ws')
@@ -29,6 +30,74 @@ const getUserFromAuthHeader = async (auth) => {
   const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
 
   return User.findById(decodedToken.id)
+}
+
+const createBookCountLoader = () => {
+  let queue = new Map()
+  let scheduled = false
+
+  const dispatch = async () => {
+    const entries = [...queue.entries()]
+    queue = new Map()
+    scheduled = false
+
+    try {
+      const authorIds = entries.map(([authorId]) => authorId)
+      const objectIds = authorIds.map((authorId) => new mongoose.Types.ObjectId(authorId))
+
+      const counts = await mongoose.connection.collection('books').aggregate([
+        {
+          $match: {
+            author: { $in: objectIds },
+          },
+        },
+        {
+          $group: {
+            _id: '$author',
+            count: { $sum: 1 },
+          },
+        },
+      ]).toArray()
+
+      const countsByAuthorId = new Map(
+        counts.map(({ _id, count }) => [_id.toString(), count]),
+      )
+
+      entries.forEach(([authorId, resolvers]) => {
+        const count = countsByAuthorId.get(authorId) ?? 0
+        resolvers.resolve.forEach((resolve) => resolve(count))
+      })
+    } catch (error) {
+      entries.forEach(([, resolvers]) => {
+        resolvers.reject.forEach((reject) => reject(error))
+      })
+    }
+  }
+
+  return {
+    load(authorId) {
+      const key = authorId.toString()
+
+      return new Promise((resolve, reject) => {
+        const existing = queue.get(key)
+
+        if (existing) {
+          existing.resolve.push(resolve)
+          existing.reject.push(reject)
+        } else {
+          queue.set(key, {
+            resolve: [resolve],
+            reject: [reject],
+          })
+        }
+
+        if (!scheduled) {
+          scheduled = true
+          queueMicrotask(dispatch)
+        }
+      })
+    },
+  }
 }
 
 // Using the express middleware
@@ -72,7 +141,10 @@ const startServer = async (port) => {
       context: async ({ req }) => {
         const auth = req.headers.authorization
         const currentUser = await getUserFromAuthHeader(auth)
-        return { currentUser }
+        return {
+          currentUser,
+          bookCountLoader: createBookCountLoader(),
+        }
       },
     }),
   )
