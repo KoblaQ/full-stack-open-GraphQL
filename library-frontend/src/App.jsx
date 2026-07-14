@@ -13,6 +13,8 @@ import {
 } from '@apollo/client/react'
 import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries'
 
+import { addBookToCache } from './utils/apolloCache'
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(localStorage.getItem('library-user-token'))
@@ -28,6 +30,7 @@ const App = () => {
     onData: ({ data }) => {
       console.log(data)
       const addedBook = data.data.bookAdded
+      addBookToCache(client.cache, addedBook)
       window.alert(`${addedBook.title} has been added`)
     },
   })

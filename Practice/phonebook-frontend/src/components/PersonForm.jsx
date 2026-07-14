@@ -23,16 +23,18 @@ const CREATE_PERSON = gql`
   }
 `
 
-const ALL_PERSONS = gql`
-  query {
-    allPersons {
-      name
-      # phone
-      number
-      id
-    }
-  }
-`
+// const ALL_PERSONS = gql`
+//   query {
+//     allPersons {
+//       name
+//       # phone
+//       number
+//       id
+//     }
+//   }
+// `
+
+import { addPersonToCache } from '../utils/apolloCache'
 
 const PersonForm = ({ setError }) => {
   const [name, setName] = useState('')
@@ -46,11 +48,14 @@ const PersonForm = ({ setError }) => {
     onError: (error) => setError(error.message),
     // refetchQueries: [{ query: ALL_PERSONS }],
     update: (cache, response) => {
-      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
-        return {
-          allPersons: allPersons.concat(response.data.addPerson),
-        }
-      })
+      const addedPerson = response.data.addPerson
+      addPersonToCache(cache, addedPerson)
+
+      // cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+      //   return {
+      //     allPersons: allPersons.concat(response.data.addPerson),
+      //   }
+      // })
     },
   })
 
