@@ -70,7 +70,7 @@ const startServer = async (port) => {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
-        const auth = req.header.authorization
+        const auth = req.headers.authorization
         const currentUser = await getUserFromAuthHeader(auth)
         return { currentUser }
       },

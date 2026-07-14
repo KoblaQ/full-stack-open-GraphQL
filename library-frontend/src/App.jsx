@@ -6,8 +6,12 @@ import BirthYearForm from './components/BirthYearForm'
 import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
 
-import { useApolloClient, useQuery } from '@apollo/client/react'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import {
+  useApolloClient,
+  useQuery,
+  useSubscription,
+} from '@apollo/client/react'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -19,6 +23,14 @@ const App = () => {
   // console.log(me.data?.me?.favoriteGenre)
 
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log(data)
+      const addedBook = data.data.bookAdded
+      window.alert(`${addedBook.title} has been added`)
+    },
+  })
 
   if (authorsResult.loading || booksResult.loading) {
     return <div>loading...</div>
