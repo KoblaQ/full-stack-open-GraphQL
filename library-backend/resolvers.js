@@ -101,6 +101,7 @@ const resolvers = {
 
       return authors.map((author) => ({
         ...author.toObject(),
+        id: author.id,
         bookCount: countsByAuthorId.get(author._id.toString()) ?? 0,
       }))
     },
