@@ -54,7 +54,7 @@ const resolvers = {
     //   )
     // },
     allBooks: async (root, args) => {
-      console.log('Book.find')
+      // console.log('Book.find')
       if (!args.author && !args.genre) {
         return Book.find({}).populate('author')
       }
@@ -84,7 +84,7 @@ const resolvers = {
     // allAuthors: () => authors,
     // allAuthors: async () => await Author.find({}),
     allAuthors: async () => {
-      console.log('Authors.find')
+      // console.log('Authors.find')
       const authors = await Author.find({})
       const bookCounts = await Book.aggregate([
         {
@@ -113,7 +113,7 @@ const resolvers = {
 
   Author: {
     bookCount: (root) => {
-      console.log('BOOK.Count')
+      // console.log('BOOK.Count')
       return root.bookCount ?? 0
     },
   },
